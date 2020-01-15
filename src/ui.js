@@ -8,6 +8,7 @@ class Ui {
       this.forState = document.querySelector('add');
    }
 
+   // carrega posts
    showPosts(posts){
       let output = '';
 
@@ -31,6 +32,7 @@ class Ui {
       this.post.innerHTML = output;
    }
 
+   // exibe alerta ao criar, editar ou excluir post
    showAlert(message, className){
       this.clearAlert();
 
@@ -53,6 +55,7 @@ class Ui {
       }, 3000);
    }
 
+   // limpa alerta
    clearAlert(){
       const currentAlert = document.querySelector('.alert');
 
@@ -62,9 +65,16 @@ class Ui {
       }
    }
 
+   // limpa campos do formulario
    clearFields(){
       this.titleInput.value = '';
       this.bodyInput.value = '';
+   }
+
+   fillForm(data){
+      this.titleInput.value = data.title;
+      this.bodyInput.value = data.body;
+      this.idInput.value = data.id;
    }
 }
 

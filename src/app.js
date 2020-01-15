@@ -7,8 +7,11 @@ document.addEventListener('DOMContentLoaded', getPosts);
 // aguarda por adicionar post
 document.querySelector('.post-submit').addEventListener('click', submitPost);
 
-// aguard por apagar post
+// aguarda por apagar post
 document.querySelector('#posts').addEventListener('click', deletePost);
+
+// aguarda pelo estado de edição
+document.querySelector('#posts').addEventListener('click', enableEdit);
 
 // retorna posts
 function getPosts(){
@@ -57,5 +60,25 @@ function deletePost(e){
             })
             .catch(err => console.log(err));
       }
+   }
+}
+
+// habilita função de editar
+function enableEdit(e){
+   e.preventDefault();
+
+   if (e.target.parentElement.classList.contains('edit')) {
+      const id = e.target.parentElement.dataset.id;
+      const title = e.target.parentElement.previousElementSibling.previousElementSibling.textContent;
+      const body = e.target.parentElement.previousElementSibling.textContent;
+      
+      const data = {
+         id,
+         title,
+         body
+      }
+
+      // preenche form com o post selecionado
+      ui.fillForm(data);
    }
 }
