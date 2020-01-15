@@ -1,6 +1,7 @@
 const path = require('path')
 
 module.exports = {
+  watch: true,
   entry: {
     app: ['@babel/polyfill', './src/app.js']
   },
