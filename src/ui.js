@@ -5,7 +5,7 @@ class Ui {
       this.bodyInput = document.querySelector('#body');
       this.idInput = document.querySelector('#id');
       this.postSubmit = document.querySelector('.post-submit');
-      this.forState = document.querySelector('add');
+      this.formState = 'add';
    }
 
    // carrega posts
@@ -71,10 +71,52 @@ class Ui {
       this.bodyInput.value = '';
    }
 
+   //insere conteudo do post no formulario para editar
    fillForm(data){
       this.titleInput.value = data.title;
       this.bodyInput.value = data.body;
       this.idInput.value = data.id;
+
+      this.changeFormState('edit');
+   }
+
+   //limpa campo de ID oculto
+   clearIdInput(){
+      this.idInput.value = '';
+   }
+
+   // muda form para estado de edicao
+   changeFormState(type){
+      if (type === 'edit') {
+         this.postSubmit.textContent = 'Update post';
+         this.postSubmit.className = 'post-submit btn btn-warning btn-block';
+
+         // cria botao de cacelar
+         const button = document.createElement('button');
+         button.className = 'post-cancel btn btn-light btn-block';
+         button.appendChild(document.createTextNode('Cancel Edit'));
+         // pega elemento-pai do botao de cancelar
+         const cardForm = document.querySelector('.card-form');
+         // pega elemento imediatamente posterior ao botao de cancelar
+         const formEnd = document.querySelector('.form-end');
+         // insere botao de cancelar
+         cardForm.insertBefore(button, formEnd);
+      } else {
+         // modo ADD
+         // altera comportamento do botao
+         this.postSubmit.textContent = 'Post It';
+         this.postSubmit.className = 'post-submit btn btn-primary btn-block';
+
+         // remove botao de cancelar, se estiver visivel
+         if(document.querySelector('.post-cancel')) {
+            document.querySelector('.post-cancel').remove();
+         }
+
+         // limpa ID no campo de ID oculto
+         this.clearIdInput();
+         // limpa campos de texto no form
+         this.clearFields();
+      }
    }
 }
 

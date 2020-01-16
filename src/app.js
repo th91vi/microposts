@@ -13,6 +13,9 @@ document.querySelector('#posts').addEventListener('click', deletePost);
 // aguarda pelo estado de edição
 document.querySelector('#posts').addEventListener('click', enableEdit);
 
+// aguarda pelo evento de cancelar edicao
+document.querySelector('.card-form').addEventListener('click', cancelEdit);
+
 // retorna posts
 function getPosts(){
    http.get('http://localhost:3000/posts')
@@ -24,24 +27,48 @@ function getPosts(){
 function submitPost(){
    const title = document.querySelector('#title').value;
    const body = document.querySelector('#body').value;
+   const id = document.querySelector('#id').value;
 
    const data = {
       title, // em ES6, esta linha equivale a title:title
       body // em ES6, esta linha equivale a body:body
    }
 
-   // cria post
-   http.post('http://localhost:3000/posts', data)
-      .then(data => {
-         // confirma envio do post
-         ui.showAlert('Post added', 'alert alert-success');
-         // limpa campos do formulario
-         ui.clearFields();
+   // verifica que campos do form nao estao vazios
+   if (title === '' || body === '') {
+      ui.showAlert('Please fill in all fields', 'alert alert-danger');
+   } else {
 
-         // retorna na interface todos os posts, inclusive o que acabamos de adicionar
-         getPosts();
-      })
-      .catch(err => console.log(err));
+      // condicional verifica se eh um estado de ADD ou EDIT, pois o campo oculto de ID vem vazio por padrao, e eh limpo ao cancelar o estado de edicao
+      if (id === '') {
+         // cria post
+         http.post('http://localhost:3000/posts', data)
+            .then(data => {
+               // confirma envio do post
+               ui.showAlert('Post added', 'alert alert-success');
+               // limpa campos do formulario
+               ui.clearFields();
+      
+               // retorna na interface todos os posts, inclusive o que acabamos de adicionar
+               getPosts();
+            })
+            .catch(err => console.log(err));
+      } else {
+      // edita post
+      http.put(`http://localhost:3000/posts/${id}`, data)
+         .then(data => {
+            // confirma edicao do post
+            ui.showAlert('Post updated', 'alert alert-success');
+            // retorna estado para ADD
+            ui.changeFormState('add');
+   
+            // retorna na interface todos os posts, inclusive o que acabamos de editar
+            getPosts();
+         })
+         .catch(err => console.log(err));
+         
+      }
+   }
 }
 
 // funcao de apagar posts
@@ -81,4 +108,13 @@ function enableEdit(e){
       // preenche form com o post selecionado
       ui.fillForm(data);
    }
+}
+
+// cancela estado de edicao
+function cancelEdit(e){
+   if (e.target.classList.contains('post-cancel')) {
+      ui.changeFormState('add');
+   }
+
+   e.preventDefault();
 }
